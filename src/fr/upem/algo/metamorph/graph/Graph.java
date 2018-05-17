@@ -21,5 +21,15 @@ public interface Graph {
 	
 	// Graph create(URI path) throws IOException;
 
-	// String toGraphviz();
+	default String toGraphviz() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("digraph G {\n");
+		for(int i=0; i<numberOfVertices(); i++) {
+			sb.append(i + ";\n");
+			forEachEdge(i, e -> {
+				sb.append(e.getStart()).append(" -> ").append(e.getEnd()).append(" [ label=\"").append(e.getValue()).append("\" ];\n");
+			});
+		}
+		return sb.toString();
+	}
 }
