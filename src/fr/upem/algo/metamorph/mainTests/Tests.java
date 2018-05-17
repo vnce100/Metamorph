@@ -47,11 +47,13 @@ public class Tests {
 		 * System.out.println(Graphs.DFS(adjGraph));
 		 * System.out.println(Graphs.BFS(adjGraph));
 		 */
-
-		Graph g2 = Graphs.makeGraphFromMatrixFile(
-				Paths.get("C:\\Users\\v.vivier\\git\\Metamorph\\res\\matrices\\td3_exo1.mat"), i -> new AdjGraph(i));
+		
+		// make graph from mat file
+		Graph g2 = Graphs.makeGraphFromMatrixFile(Paths.get("C:\\Users\\v.vivier\\git\\Metamorph\\res\\matrices\\td3_exo1.mat"), i -> new MatGraph(i));
+		// write in dot
 		Path path = Paths.get("C:\\Users\\v.vivier\\git\\Metamorph\\res\\dots\\tests.dot");
 		Files.write(path, g2.toGraphviz().getBytes());
-		System.out.println(Graphs.BFS(g2, 0, 9));
+		// graph BFS
+		System.out.println(Graphs.EdmonsKarp(g2, 0, 8));
 	}
 }

@@ -263,17 +263,14 @@ public class Graphs {
 	public static Graph makeGraphFromMatrixFile(Path path, IntFunction<Graph> factory) throws IOException {
 		try {
 			List<String> contents = Files.readAllLines(path);
-			/*
-			 * for (String s : contents) { System.out.println(s); }
-			 */
+			//for (String s : contents) { System.out.println(s); }
 			int size = Integer.valueOf(contents.get(0));
 			contents.remove(0);
 			Graph graph = factory.apply(size);
-
 			for (int i = 0; i < size; i++) {
+				String[] lineTokens = contents.get(i).split(" ");
 				for (int j = 0; j < size; j++) {
-					String[] line = contents.get(i).split(" ");
-					graph.addEdge(i, j, Integer.valueOf(line[0]));
+					graph.addEdge(i, j, Integer.valueOf(lineTokens[j]));
 				}
 
 			}

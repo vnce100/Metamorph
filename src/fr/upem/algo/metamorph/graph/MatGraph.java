@@ -117,7 +117,7 @@ public class MatGraph implements Graph {
 
 	private int checkValue(int value) {
 		if (value == 0) {
-			throw new IllegalArgumentException("Value 0 is not allowed");
+			//throw new IllegalArgumentException("Value 0 is not allowed");
 		}
 		return value;
 	}

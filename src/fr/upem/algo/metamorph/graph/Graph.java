@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 public interface Graph {
+	
+	final static int NULL_VALUE = 0;
 
 	int numberOfEdges();
 
@@ -27,9 +29,12 @@ public interface Graph {
 		for(int i=0; i<numberOfVertices(); i++) {
 			sb.append(i + ";\n");
 			forEachEdge(i, e -> {
-				sb.append(e.getStart()).append(" -> ").append(e.getEnd()).append(" [ label=\"").append(e.getValue()).append("\" ];\n");
+				if(e.getValue() != NULL_VALUE) {
+					sb.append(e.getStart()).append(" -> ").append(e.getEnd()).append(" [ label=\"").append(e.getValue()).append("\" ];\n");
+				}
 			});
 		}
+		sb.append("}");
 		return sb.toString();
 	}
 }
