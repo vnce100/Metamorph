@@ -447,7 +447,11 @@ public class Graphs {
 			List<List<Integer>> augmentingPaths = new ArrayList<>();
 			for(int i=0; i<source.length-1; i++) {
 				for(int j=0; j<target.length-1; j++) {
-					augmentingPaths.add(BFS(graph, i, j));
+					List<Integer> augmentingPath = BFS(graph, i, j);
+					if(!augmentingPath.isEmpty()) {
+						System.out.println("add augmentingPath");
+						augmentingPaths.add(augmentingPath);
+					}
 				}
 			}
 			for(List<Integer> augmentingPath : augmentingPaths) {
@@ -467,7 +471,7 @@ public class Graphs {
 						graph.addEdge(u, v, val1 - f);
 						graph.addEdge(v, u, val2 + f);
 					}
-				} 
+				}
 			}
 		}
 		return cutEdges;

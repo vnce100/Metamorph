@@ -8,7 +8,6 @@ import java.util.Scanner;
 import java.nio.file.Paths;
 import java.awt.Color;
 import java.io.IOException;
-import java.net.URI;
 
 import fr.upem.algo.metamorph.graph.AdjGraph;
 import fr.upem.algo.metamorph.graph.Edge;
@@ -51,10 +50,15 @@ public class ImageMixer {
 			throw new IllegalStateException("main: images and mask don't have the same size");
 		}
 		ImageMixer im = new ImageMixer(left, right, mask);
+		System.out.print("Making graph...");
 		im.makeGraph();
+		System.out.print("OK\nEdmons Karp...");
 		im.processMinimalCut();
+		System.out.print("OK\nCreate mixed image...");
 		im.processMixedImage();
+		System.out.print("OK\nWriting in file...");
 		im.writeFile("res/testImg", "result");
+		System.out.print("OK");
 	}
 	
 	/**
@@ -62,9 +66,9 @@ public class ImageMixer {
 	 */
 	public void makeGraph() {
 		graph = new AdjGraph(left.getWidth() * left.getHeight());
-		for(int i=0; i<left.getWidth(); i++) {
-			for(int j=0; j<left.getHeight(); j++) {
-				System.out.println("i="+i+", j="+j);
+		for(int i=0; i<left.getWidth()-1; i++) {
+			for(int j=0; j<left.getHeight()-1; j++) {
+				//System.out.println("i="+i+", j="+j);
 				if(i-1 >= 0) {
 					graph.addEdge(conv(i, j), conv(i, j), (int) Image.capacity(left.get(i, j).getRGB(), right.get(i, j).getRGB(), left.get(i-1, j).getRGB(), right.get(i-1, j).getRGB())); // add haut
 					if(j-1 >= 0) graph.addEdge(conv(i, j), conv(i, j), (int) Image.capacity(left.get(i, j).getRGB(), right.get(i, j).getRGB(), left.get(i-1, j-1).getRGB(), right.get(i-1, j-1).getRGB())); // add haut gauche
@@ -104,18 +108,17 @@ public class ImageMixer {
 		for(int i=0; i<target.length; i++) {
 			target[i] = targetList.get(i);
 		}
-		cutEdges = Graphs.EdmonsKarpEdges(graph, source, target);
+		this.cutEdges = Graphs.EdmonsKarpEdges(graph, source, target);
 	}
 	
-	/**
-	 * 
-	 */
 	public void processMixedImage() {
 		mixed = Image.newImage(left.getWidth(), left.getHeight());
-		for(int i=0; i<graph.numberOfVertices(); i++) {
-			if(mask.getGreen(i) > 200) mixed.set(i, new Color(Image.blur(left.get(i).getRGB(), right.get(i).getRGB(), 0.5)));
-			if(mask.getBlue(i)  > 200) mixed.set(i, left.get(i));
-			if(mask.getRed(i)   > 200) mixed.set(i, right.get(i));
+		if(cutEdges == null || cutEdges.isEmpty()) {
+			throw new IllegalStateException("EdmonsKarpEdges result is empty");
+		}
+		for(Edge e : cutEdges) {
+			mixed.set(e.getStart(), left.get(e.getStart()));
+			mixed.set(e.getEnd(), right.get(e.getEnd()));
 		}
 	}
 	
