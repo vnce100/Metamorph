@@ -119,6 +119,19 @@ public class AdjGraph implements Graph {
 		*/
 		return value;
 	}
+	
+	public void removeEdge(int src, int dst) {
+		Iterator<Edge> it = Objects.requireNonNull(adj.get(checkNode(src))).iterator();
+		checkNode(dst);
+		while(it.hasNext()) {
+			if(it.next().getEnd() == dst) {
+				it.remove();
+				edges--;
+				return;
+			}
+		}
+		throw new IllegalStateException("Try to remove non existing edge");
+	}
 
 	public int addNodeToGraph(){
 		nodes++;

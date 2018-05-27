@@ -12,6 +12,8 @@ public interface Graph {
 	int numberOfVertices();
 
 	void addEdge(int i, int j, int value);
+	
+	void removeEdge(int i, int j);
 
 	boolean isEdge(int i, int j);
 

@@ -1,5 +1,7 @@
 package fr.upem.algo.metamorph.graph;
 
+import static fr.upem.algo.metamorph.graph.Graph.NULL_VALUE;
+
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -7,14 +9,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.IntFunction;
+
 
 public class Graphs {
 	private static int RANDOM_MAX_VALUE = 100;
@@ -295,24 +300,51 @@ public class Graphs {
 
 	}
 
+	/**
+	 * 
+	 * @param graph
+	 * @param source 
+	 * @param target
+	 * @return path from source to target. May be null if there is no path from source to target.
+	 */
 	public static List<Integer> BFS(Graph graph, int source, int target) {
-		List<Integer> path = new ArrayList<>();
-		HashSet<Integer> visited = new HashSet<>();
-		LinkedList<Integer> queue = new LinkedList<Integer>();
+		Queue<Integer> queue = new LinkedList<Integer>();
+		int[] predecessors = new int[graph.numberOfVertices()];
+		List<Integer> predecessorsToTarget = new ArrayList<>();
+		BitSet targetReached= new BitSet(1);
+		for(int i=0; i<graph.numberOfVertices(); i++) {
+			predecessors[i] = -1;
+		}
 		queue.add(source);
-		visited.add(source);
-		while (queue.size() != 0) {
-			int u = queue.poll();
-			for (int v = 0; v < graph.numberOfVertices(); v++) {
-				if (!visited.contains(v) && (graph.getValue(u, v) != Edge.NULL_VALUE)) {
-					queue.add(v);
-					visited.add(v);
+		predecessors[source] = source;
+		while(!queue.isEmpty() && !targetReached.get(0)) {			
+			int s = queue.poll();
+			graph.forEachEdge(s, e -> {
+				if(predecessors[e.getEnd()] == -1 && e.getValue() != NULL_VALUE) {
+					queue.add(e.getEnd());
+					predecessors[e.getEnd()] = e.getStart();
+					if(e.getEnd() == target) {
+						targetReached.set(0);	// arrêt de l'algorithme dès que la target est trouvée
+					}
 				}
+			});
+		}
+		if(targetReached.get(0)) {			// fabrication du chemin de la source vers la target
+			predecessorsToTarget.add(0, target);
+			int i = 0;
+			int predecessor = predecessors[target];
+			predecessorsToTarget.add(i+1, predecessor);
+			i++;
+			while(predecessor != source) {
+				predecessor = predecessors[predecessor];
+				predecessorsToTarget.add(i+1, predecessor);
+				i++;
 			}
 		}
-		return path;
+		Collections.reverse(predecessorsToTarget);
+		return predecessorsToTarget;
 	}
-
+	
 	/**
 	 * 
 	 * @param graph
@@ -324,12 +356,20 @@ public class Graphs {
 		int totalFlow = 0;
 		while (true) {
 			List<Integer> augmentingPath = BFS(graph, source, target);
-			if (augmentingPath.isEmpty()) {
-				int f = augmentingPath.stream().min(Integer::min).get();
-				for (int i : augmentingPath) {
-					graph.forEachEdge(i, e -> {
-						decreaseCapacity(graph, e.getStart(), e.getEnd(), f);
-					});
+			if (!augmentingPath.isEmpty()) {
+				int f = minCapacity(graph, augmentingPath, target);
+				totalFlow += f;
+				for (int i=0; i<augmentingPath.size()-1; i++) {
+					int u = augmentingPath.get(i);
+					int v = augmentingPath.get(i+1);
+					int val1 = graph.getValue(u, v);
+					int val2 = graph.getValue(v, u);
+					graph.removeEdge(u, v);
+					if(graph.isEdge(v, u)) {
+						graph.removeEdge(v, u);
+					}
+					graph.addEdge(u, v, val1 - f);
+					graph.addEdge(v, u, val2 + f);
 				}
 			} else {
 				return totalFlow;
@@ -337,8 +377,15 @@ public class Graphs {
 		}
 	}
 
-	private static void decreaseCapacity(Graph graph, int start, int end, int f) {
-		graph.addEdge(start, end, graph.getValue(start, end) - f);
-		graph.addEdge(end, start, graph.getValue(end, start) + f);
+	private static int minCapacity(Graph graph, List<Integer> augmentingPath, int target) {
+		int minValue = Integer.MAX_VALUE;
+		for(int i=0; i<augmentingPath.size()-1; i++) {
+			int start = augmentingPath.get(i);
+			int end = augmentingPath.get(i+1);
+			if(graph.getValue(start, end) < minValue) {
+				minValue = graph.getValue(start, end);
+			}
+		}
+		return minValue;
 	}
 }

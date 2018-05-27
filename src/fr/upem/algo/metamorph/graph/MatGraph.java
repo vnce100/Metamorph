@@ -121,4 +121,12 @@ public class MatGraph implements Graph {
 		}
 		return value;
 	}
+	
+	public void removeEdge(int src, int dst) {
+		if (mat[checkNode(src)][checkNode(dst)] == NULL_VALUE) {
+			throw new IllegalStateException("Try to remove non existing edge");
+		}
+		mat[src][dst] = NULL_VALUE;
+		edges--;
+	}
 }
