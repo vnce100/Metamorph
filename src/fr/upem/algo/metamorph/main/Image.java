@@ -1,4 +1,4 @@
-package fr.upem.algo.metamorph;
+package fr.upem.algo.metamorph.main;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

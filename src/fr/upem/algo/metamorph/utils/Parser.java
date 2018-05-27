@@ -1,4 +1,4 @@
-package fr.upem.algo.metamorph.parse;
+package fr.upem.algo.metamorph.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
