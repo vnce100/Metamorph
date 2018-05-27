@@ -7,13 +7,13 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class AdjGraph implements Graph {
-	
+
 	private final ArrayList<LinkedList<Edge>> adj;
-	private final int nodes; // number of nodes
+	private int nodes; // number of nodes
 	private int edges;
-	
+
 	/**
-	 * 
+	 *
 	 * @param nodes
 	 */
 	public AdjGraph(int nodes) {
@@ -26,9 +26,9 @@ public class AdjGraph implements Graph {
 			adj.add(new LinkedList<>());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public int numberOfEdges() {
@@ -36,7 +36,7 @@ public class AdjGraph implements Graph {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public int numberOfVertices() {
@@ -44,7 +44,7 @@ public class AdjGraph implements Graph {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public void addEdge(int src, int dst, int value) {
@@ -63,7 +63,7 @@ public class AdjGraph implements Graph {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public boolean isEdge(int src, int dst) {
@@ -76,7 +76,7 @@ public class AdjGraph implements Graph {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public int getValue(int src, int dst) {
@@ -90,33 +90,40 @@ public class AdjGraph implements Graph {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public Iterator<Edge> edgeIterator(int i) {
 		return adj.get(checkNode(i)).iterator();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public void forEachEdge(int i, Consumer<Edge> consumer) {
 		adj.get(checkNode(i)).forEach(consumer);
 	}
-	
+
 	private int checkNode(int n) {
 		if(n < 0 || n > nodes) {
 			throw new IllegalArgumentException("Node is not in the matrix");
 		}
 		return n;
 	}
-	
+
 	private int checkValue(int value) {
 		/*if(value == 0) {
 			throw new IllegalArgumentException("Value 0 is not allowed");
 		}
 		*/
 		return value;
+	}
+
+	public int addNodeToGraph(){
+		nodes++;
+		adj.add(new LinkedList<>());
+		System.err.println(""+ nodes);
+		return nodes;
 	}
 }
