@@ -357,7 +357,7 @@ public class Graphs {
 		while (true) {
 			List<Integer> augmentingPath = BFS(graph, source, target);
 			if (!augmentingPath.isEmpty()) {
-				int f = minCapacity(graph, augmentingPath, target);
+				int f = minCapacity(graph, augmentingPath);
 				totalFlow += f;
 				for (int i=0; i<augmentingPath.size()-1; i++) {
 					int u = augmentingPath.get(i);
@@ -377,7 +377,7 @@ public class Graphs {
 		}
 	}
 
-	private static int minCapacity(Graph graph, List<Integer> augmentingPath, int target) {
+	private static int minCapacity(Graph graph, List<Integer> augmentingPath) {
 		int minValue = Integer.MAX_VALUE;
 		for(int i=0; i<augmentingPath.size()-1; i++) {
 			int start = augmentingPath.get(i);
@@ -387,5 +387,46 @@ public class Graphs {
 			}
 		}
 		return minValue;
+	}
+	
+	/**
+	 * 
+	 * @param graph
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public static int EdmonsKarp(Graph graph, int source[], int[] target) {
+		int totalFlow = 0;
+		boolean noMorePath = false;
+		while (!noMorePath) {
+			noMorePath = true;
+			List<List<Integer>> augmentingPaths = new ArrayList<>();
+			for(int i=0; i<source.length-1; i++) {
+				for(int j=0; j<target.length-1; j++) {
+					augmentingPaths.add(BFS(graph, i, j));
+				}
+			}
+			for(List<Integer> augmentingPath : augmentingPaths) {
+				if (!augmentingPath.isEmpty()) {
+					noMorePath = false;
+					int f = minCapacity(graph, augmentingPath);
+					totalFlow += f;
+					for (int i=0; i<augmentingPath.size()-1; i++) {
+						int u = augmentingPath.get(i);
+						int v = augmentingPath.get(i+1);
+						int val1 = graph.getValue(u, v);
+						int val2 = graph.getValue(v, u);
+						graph.removeEdge(u, v);
+						if(graph.isEdge(v, u)) {
+							graph.removeEdge(v, u);
+						}
+						graph.addEdge(u, v, val1 - f);
+						graph.addEdge(v, u, val2 + f);
+					}
+				} 
+			}
+		}
+		return totalFlow;
 	}
 }
