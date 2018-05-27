@@ -1,6 +1,7 @@
 package fr.upem.algo.metamorph.graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -138,5 +139,28 @@ public class AdjGraph implements Graph {
 		adj.add(new LinkedList<>());
 		System.err.println(""+ nodes);
 		return nodes;
+	}
+
+	@Override
+	public Graph createCopy() {
+		AdjGraph copy = new AdjGraph(this.nodes);
+		copy.edges = this.edges;
+		int i=0;
+		for(LinkedList<Edge> l : this.adj) {
+			Collections.copy(copy.adj.get(i), l);
+			i++;
+		}
+		return copy;
+	}
+
+	@Override
+	public void setValue(int src, int dst, int value) {
+		forEachEdge(src, e -> {
+			if(e.getEnd() == dst) {
+				e.setValue(value);
+				return;
+			}
+		});
+		throw new IllegalStateException("Try to set value on non existing node");
 	}
 }

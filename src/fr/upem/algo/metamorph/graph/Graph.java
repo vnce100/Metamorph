@@ -18,10 +18,14 @@ public interface Graph {
 	boolean isEdge(int i, int j);
 
 	int getValue(int i, int j);
+	
+	void setValue(int i, int j, int value);
 
 	Iterator<Edge> edgeIterator(int i);
 
 	void forEachEdge(int i, Consumer<Edge> consumer);
+	
+	Graph createCopy();
 	
 	// Graph create(URI path) throws IOException;
 

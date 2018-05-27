@@ -129,4 +129,24 @@ public class MatGraph implements Graph {
 		mat[src][dst] = NULL_VALUE;
 		edges--;
 	}
+
+	@Override
+	public Graph createCopy() {
+		MatGraph copy = new MatGraph(this.nodes);
+		copy.edges = this.edges;
+		for(int i=0; i<nodes; i++) {
+			for(int j=0; j<nodes; j++) {
+				copy.mat[i][j] = this.mat[i][j];
+			}
+		}
+		return copy;
+	}
+
+	@Override
+	public void setValue(int src, int dst, int value) {
+		if (mat[checkNode(src)][checkNode(dst)] == NULL_VALUE) {
+			throw new IllegalStateException("Try to set value on non existing node");
+		}
+		mat[src][dst] = value;
+	}
 }

@@ -5,7 +5,7 @@ public class Edge {
 	
 	private final int start;
 	private final int end;
-	private final int value;
+	private int value;
 
 	
 	public Edge(int start, int end, int value) {
@@ -20,6 +20,10 @@ public class Edge {
 	
 	public int getValue() {
 		return value;
+	}
+	
+	public void setValue(int newValue) {
+		this.value = newValue;
 	}
 	
 	public int getStart() {
