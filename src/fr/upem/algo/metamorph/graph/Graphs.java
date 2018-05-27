@@ -439,8 +439,8 @@ public class Graphs {
 	 * @param target
 	 * @return
 	 */
-	public static int EdmonsKarp(Graph graph, int source[], int[] target, List<Edge> edges) {
-		int totalFlow = 0;
+	public static List<Edge> EdmonsKarpEdges(Graph graph, int source[], int[] target) {
+		List<Edge> cutEdges = new ArrayList<>();
 		boolean noMorePath = false;
 		while (!noMorePath) {
 			noMorePath = true;
@@ -454,12 +454,12 @@ public class Graphs {
 				if (!augmentingPath.isEmpty()) {
 					noMorePath = false;
 					int f = minCapacity(graph, augmentingPath);
-					totalFlow += f;
 					for (int i=0; i<augmentingPath.size()-1; i++) {
 						int u = augmentingPath.get(i);
 						int v = augmentingPath.get(i+1);
 						int val1 = graph.getValue(u, v);
 						int val2 = graph.getValue(v, u);
+						cutEdges.add(new Edge(u, v));
 						graph.removeEdge(u, v);
 						if(graph.isEdge(v, u)) {
 							graph.removeEdge(v, u);
@@ -470,6 +470,6 @@ public class Graphs {
 				} 
 			}
 		}
-		return totalFlow;
+		return cutEdges;
 	}
 }

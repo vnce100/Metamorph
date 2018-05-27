@@ -15,7 +15,7 @@ public class Edge {
 	}
 
 	public Edge(int start, int end) {
-		this(start, end ,1);
+		this(start, end , 1);
 	}
 	
 	public int getValue() {

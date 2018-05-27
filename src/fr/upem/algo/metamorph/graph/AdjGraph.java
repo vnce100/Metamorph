@@ -108,6 +108,7 @@ public class AdjGraph implements Graph {
 
 	private int checkNode(int n) {
 		if(n < 0 || n > nodes) {
+			System.out.println("Nodes = " + nodes + " et n testé = " + n);
 			throw new IllegalArgumentException("Node is not in the matrix");
 		}
 		return n;
