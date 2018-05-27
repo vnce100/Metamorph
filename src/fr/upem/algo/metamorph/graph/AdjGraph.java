@@ -79,7 +79,7 @@ public class AdjGraph implements Graph {
 	 * 
 	 */
 	@Override
-	public int getWeight(int src, int dst) {
+	public int getValue(int src, int dst) {
 		Iterator<Edge> it = Objects.requireNonNull(adj.get(checkNode(src))).iterator();
 		checkNode(dst);
 		while(it.hasNext()) {

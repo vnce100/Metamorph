@@ -15,7 +15,7 @@ public interface Graph {
 
 	boolean isEdge(int i, int j);
 
-	int getWeight(int i, int j);
+	int getValue(int i, int j);
 
 	Iterator<Edge> edgeIterator(int i);
 

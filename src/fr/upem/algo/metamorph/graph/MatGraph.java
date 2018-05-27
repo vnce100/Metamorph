@@ -60,7 +60,7 @@ public class MatGraph implements Graph {
 	 * 
 	 */
 	@Override
-	public int getWeight(int src, int dst) {
+	public int getValue(int src, int dst) {
 		int w = mat[checkNode(src)][checkNode(dst)];
 		if (w == 0) {
 			return Edge.NULL_VALUE;

@@ -112,23 +112,36 @@ public class Graphs {
 	}
 
 	// Parcours largeur
-	/*
-	 * public static List<Integer> BFS(Graph g) { List<Integer> list = new
-	 * ArrayList<>(); HashSet<Integer> hashSet = new HashSet<>();
-	 * LinkedList<Integer> linkedList = new LinkedList<Integer>();
-	 * 
-	 * for (int i = 0; i < g.numberOfVertices(); i++){ if(!hashSet.contains(i))
-	 * BFSrec(g, i, hashSet, linkedList, list); }
-	 * 
-	 * return list; }
-	 * 
-	 * private static void BFSrec(Graph g, int i, HashSet<Integer> hashSet,
-	 * LinkedList<Integer> linkedList, List<Integer> list) { linkedList.add(i);
-	 * hashSet.contains(i); while (!linkedList.isEmpty()) { i = (int)
-	 * linkedList.removeFirst(); list.add(i); g.forEachEdge(i, e -> { if
-	 * (!hashSet.contains(e.getEnd())) { linkedList.add(e.getEnd());
-	 * hashSet.add(e.getEnd()); } }); } }
-	 */
+
+	public static List<Integer> BFS(Graph g) {
+		List<Integer> list = new ArrayList<>();
+		HashSet<Integer> hashSet = new HashSet<>();
+		LinkedList<Integer> linkedList = new LinkedList<Integer>();
+
+		for (int i = 0; i < g.numberOfVertices(); i++) {
+			if (!hashSet.contains(i))
+				BFSrec(g, i, hashSet, linkedList, list);
+		}
+
+		return list;
+	}
+
+	private static void BFSrec(Graph g, int i, HashSet<Integer> hashSet, LinkedList<Integer> linkedList,
+			List<Integer> list) {
+		linkedList.add(i);
+		hashSet.contains(i);
+		while (!linkedList.isEmpty()) {
+			i = (int) linkedList.removeFirst();
+			list.add(i);
+			g.forEachEdge(i, e -> {
+				if (!hashSet.contains(e.getEnd())) {
+					linkedList.add(e.getEnd());
+					hashSet.add(e.getEnd());
+				}
+			});
+		}
+	}
+
 	public static int[][] timedDepthFirstSearch(Graph g) {
 		Objects.requireNonNull(g);
 		int[][] times = new int[g.numberOfVertices()][2];
@@ -247,8 +260,8 @@ public class Graphs {
 	}
 
 	/**
-	 * Création d'un graphe à partir d'un fichier contenant le nombre de sommets et
-	 * sa matrice
+	 * Création d'un graphe à partir d'un fichier contenant le nombre de sommets
+	 * et sa matrice
 	 * 
 	 * @param path
 	 *            le chemin du fichier contenant la matrice du graphe
@@ -263,7 +276,7 @@ public class Graphs {
 	public static Graph makeGraphFromMatrixFile(Path path, IntFunction<Graph> factory) throws IOException {
 		try {
 			List<String> contents = Files.readAllLines(path);
-			//for (String s : contents) { System.out.println(s); }
+			// for (String s : contents) { System.out.println(s); }
 			int size = Integer.valueOf(contents.get(0));
 			contents.remove(0);
 			Graph graph = factory.apply(size);
@@ -288,12 +301,11 @@ public class Graphs {
 		LinkedList<Integer> queue = new LinkedList<Integer>();
 		queue.add(source);
 		visited.add(source);
-		while(queue.size() != 0) {
+		while (queue.size() != 0) {
 			int u = queue.poll();
-			for(int v=0; v<graph.numberOfVertices(); v++) {
-				if(!visited.contains(v) && (graph.getWeight(u, v) != Edge.NULL_VALUE)) {
+			for (int v = 0; v < graph.numberOfVertices(); v++) {
+				if (!visited.contains(v) && (graph.getValue(u, v) != Edge.NULL_VALUE)) {
 					queue.add(v);
-					path.add(u);
 					visited.add(v);
 				}
 			}
@@ -326,7 +338,7 @@ public class Graphs {
 	}
 
 	private static void decreaseCapacity(Graph graph, int start, int end, int f) {
-		graph.addEdge(start, end, graph.getWeight(start, end) - f);
-		graph.addEdge(end, start, graph.getWeight(end, start) + f);
+		graph.addEdge(start, end, graph.getValue(start, end) - f);
+		graph.addEdge(end, start, graph.getValue(end, start) + f);
 	}
 }
