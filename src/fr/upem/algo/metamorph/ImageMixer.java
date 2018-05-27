@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import java.nio.file.Paths;
-import java.awt.Color;
 import java.io.IOException;
 
 import fr.upem.algo.metamorph.graph.AdjGraph;
@@ -132,6 +131,7 @@ public class ImageMixer {
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unused")
 	private static Image promptUserForImagePath(String promptedMessage) throws IOException {
 		System.out.print(promptedMessage);
 		String pathString = null;
