@@ -26,7 +26,7 @@ public class Graphs {
 
 	/**
 	 * @throws IOException
-	 * 
+	 *
 	 */
 	public static MatGraph createMatGraph(URI matFile) throws IOException {
 		Objects.requireNonNull(matFile);
@@ -40,7 +40,7 @@ public class Graphs {
 
 	/**
 	 * @throws IOException
-	 * 
+	 *
 	 */
 	public static AdjGraph createAdjGraph(URI matFile) throws IOException {
 		Objects.requireNonNull(matFile);
@@ -71,7 +71,7 @@ public class Graphs {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nodes
 	 * @param edges
 	 * @return
@@ -267,7 +267,7 @@ public class Graphs {
 	/**
 	 * CrÃ©ation d'un graphe Ã  partir d'un fichier contenant le nombre de sommets
 	 * et sa matrice
-	 * 
+	 *
 	 * @param path
 	 *            le chemin du fichier contenant la matrice du graphe
 	 * @param factory
@@ -301,9 +301,9 @@ public class Graphs {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param graph
-	 * @param source 
+	 * @param source
 	 * @param target
 	 * @return path from source to target. May be null if there is no path from source to target.
 	 */
@@ -317,14 +317,14 @@ public class Graphs {
 		}
 		queue.add(source);
 		predecessors[source] = source;
-		while(!queue.isEmpty() && !targetReached.get(0)) {			
+		while(!queue.isEmpty() && !targetReached.get(0)) {
 			int s = queue.poll();
 			graph.forEachEdge(s, e -> {
 				if(predecessors[e.getEnd()] == -1 && e.getValue() != NULL_VALUE) {
 					queue.add(e.getEnd());
 					predecessors[e.getEnd()] = e.getStart();
 					if(e.getEnd() == target) {
-						targetReached.set(0);	// arrêt de l'algorithme dès que la target est trouvée
+						targetReached.set(0);	// arret de l'algorithme des que la target est trouvee
 					}
 				}
 			});
@@ -344,9 +344,9 @@ public class Graphs {
 		Collections.reverse(predecessorsToTarget);
 		return predecessorsToTarget;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param graph
 	 * @param source
 	 * @param target
@@ -376,8 +376,8 @@ public class Graphs {
 			}
 		}
 	}
-	
-	
+
+
 
 	private static int minCapacity(Graph graph, List<Integer> augmentingPath) {
 		int minValue = Integer.MAX_VALUE;
@@ -390,9 +390,9 @@ public class Graphs {
 		}
 		return minValue;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param graph
 	 * @param source
 	 * @param target
@@ -426,14 +426,14 @@ public class Graphs {
 						graph.addEdge(u, v, val1 - f);
 						graph.addEdge(v, u, val2 + f);
 					}
-				} 
+				}
 			}
 		}
 		return totalFlow;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param graph
 	 * @param source
 	 * @param target
@@ -475,5 +475,17 @@ public class Graphs {
 			}
 		}
 		return cutEdges;
+	}
+
+	public static Graph makeMultiFlowGraph(AdjGraph graph, int[] starts, int[] ends, int source, int target){
+		for(int start : starts){
+			graph.addEdge(source, start, Integer.MAX_VALUE);
+		}
+
+		for(int end : ends){
+			graph.addEdge(end, target, Integer.MAX_VALUE);
+		}
+
+		return graph;
 	}
 }
