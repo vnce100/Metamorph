@@ -449,7 +449,6 @@ public class Graphs {
 				for(int j=0; j<target.length-1; j++) {
 					List<Integer> augmentingPath = BFS(graph, i, j);
 					if(!augmentingPath.isEmpty()) {
-						System.out.println("add augmentingPath");
 						augmentingPaths.add(augmentingPath);
 					}
 				}
