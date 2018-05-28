@@ -1,7 +1,6 @@
 package fr.upem.algo.metamorph.graph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -144,11 +143,12 @@ public class AdjGraph implements Graph {
 	@Override
 	public Graph createCopy() {
 		AdjGraph copy = new AdjGraph(this.nodes);
-		copy.edges = this.edges;
-		int i=0;
-		for(LinkedList<Edge> l : this.adj) {
-			Collections.copy(copy.adj.get(i), l);
-			i++;
+		for(int i=0; i<this.numberOfVertices(); i++) {
+			this.forEachEdge(i, e -> {
+				if(!copy.isEdge(e.getStart(), e.getEnd())) {
+					copy.addEdge(e.getStart(), e.getEnd(), e.getValue());
+				}
+			});
 		}
 		return copy;
 	}

@@ -38,7 +38,6 @@ public class Edge {
 		return new Edge(end, start, value);
 	}
 
-
 	@Override
 	public String toString() {
 		return start + " -- " + end + " ( " + value + " )";

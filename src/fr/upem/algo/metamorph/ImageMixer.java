@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-
 import java.nio.file.Paths;
+import java.awt.Color;
 import java.io.IOException;
 
 import fr.upem.algo.metamorph.graph.AdjGraph;
-import fr.upem.algo.metamorph.graph.Edge;
-import fr.upem.algo.metamorph.graph.Graph;
 import fr.upem.algo.metamorph.graph.Graphs;
 
 public class ImageMixer {
@@ -18,8 +16,10 @@ public class ImageMixer {
 	private Image right;
 	private Image mask;
 	private Image mixed;
-	private Graph graph;
-	private List<Edge> cutEdges;
+	private AdjGraph graph;
+	private AdjGraph graphCopy;
+	private int source;
+	private int target;
 	
 	/**
 	 * 
@@ -31,33 +31,6 @@ public class ImageMixer {
 		this.left 	= Objects.requireNonNull(left);
 		this.right 	= Objects.requireNonNull(right);
 		this.mask 	= Objects.requireNonNull(mask);
-	}
-
-	/**
-	 * 
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		//Image left = promptUserForImagePath("Chemin de l'image de gauche : ");
-		//Image right = promptUserForImagePath("Chemin de l'image de droite : ");
-		//Image mask = promptUserForImagePath("Chemin du masque : ");
-		Image left = Image.newImage(Paths.get("res/testImg/test1/trump2.png"));
-		Image right = Image.newImage(Paths.get("res/testImg/test1/fruits.jpg"));
-		Image mask = Image.newImage(Paths.get("res/testImg/test1/mask-face.png"));
-		if(!(left.getWidth() == right.getWidth()) && !(left.getHeight() == right.getHeight()) && !(left.getWidth() == mask.getWidth()) && !(left.getHeight() == mask.getHeight())) {
-			throw new IllegalStateException("main: images and mask don't have the same size");
-		}
-		ImageMixer im = new ImageMixer(left, right, mask);
-		System.out.print("Making graph...");
-		im.makeGraph();
-		System.out.print("OK\nEdmons Karp...");
-		im.processMinimalCut();
-		System.out.print("OK\nCreate mixed image...");
-		im.processMixedImage();
-		System.out.print("OK\nWriting in file...");
-		im.writeFile("res/testImg", "result");
-		System.out.print("OK");
 	}
 	
 	/**
@@ -82,6 +55,21 @@ public class ImageMixer {
 				if(j-2 < left.getWidth()) graph.addEdge(conv(i, j), conv(i, j), (int) Image.capacity(left.get(i, j).getRGB(), right.get(i, j).getRGB(), left.get(i, j+1).getRGB(), right.get(i, j+1).getRGB())); // add droit
 			}
 		}
+		source = graph.addNodeToGraph();
+		target = graph.addNodeToGraph();
+		List<Integer> sourceList = new ArrayList<>();
+		List<Integer> targetList = new ArrayList<>();
+		for(int i=0; i<graph.numberOfVertices()-3; i++) {
+			if(mask.getGreen(i) > 200) continue;
+			if(mask.getBlue(i)  > 200) sourceList.add(i);
+			if(mask.getRed(i)   > 200) targetList.add(i);
+		}
+		Graphs.makeMultiFlowGraph(graph,
+				sourceList.stream().mapToInt(i -> i).toArray(),
+				targetList.stream().mapToInt(i -> i).toArray(),
+				source,
+				target);
+		graphCopy = (AdjGraph) graph.createCopy();
 	}
 	
 	private int conv(int i, int j) {
@@ -92,33 +80,23 @@ public class ImageMixer {
 	 * 
 	 */
 	public void processMinimalCut() {
-		List<Integer> sourceList = new ArrayList<>();
-		List<Integer> targetList = new ArrayList<>();
-		for(int i=0; i<graph.numberOfVertices(); i++) {
-			if(mask.getGreen(i) > 200) continue;
-			if(mask.getBlue(i)  > 200) sourceList.add(i);
-			if(mask.getRed(i)   > 200) targetList.add(i);
-		}
-		int[] source = new int[sourceList.size()];
-		int[] target = new int[targetList.size()];
-		for(int i=0; i<source.length; i++) {
-			source[i] = sourceList.get(i);
-		}
-		for(int i=0; i<target.length; i++) {
-			target[i] = targetList.get(i);
-		}
-		this.cutEdges = Graphs.EdmonsKarpEdges(graph, source, target);
+		Graphs.EdmonsKarp(graph, source, target);
 	}
 	
-	public void processMixedImage() {
+	public void processMixedImage() {	
 		mixed = Image.newImage(left.getWidth(), left.getHeight());
-		if(cutEdges == null || cutEdges.isEmpty()) {
-			throw new IllegalStateException("EdmonsKarpEdges result is empty");
-		}
-		for(Edge e : cutEdges) {
-			mixed.set(e.getStart(), left.get(e.getStart()));
-			mixed.set(e.getEnd(), right.get(e.getEnd()));
-		}
+		for(int i=0; i<graph.numberOfVertices()-3; i++) {
+			int i2 = i;
+			graph.forEachEdge(i, e -> {
+				if(e.getValue() == graphCopy.getValue(e.getStart(), e.getEnd())) {
+					mixed.set(i2, new Color(Image.blur(left.get(i2).getRGB(), right.get(i2).getRGB(), 0.7)));
+				} else if(mask.get(i2).getGreen() < 100 && mask.get(i2).getRed() > mask.get(i2).getBlue() ) {
+					mixed.set(i2, right.get(i2));
+				} else {
+					mixed.set(i2, left.get(i2));
+				}
+			});
+		}				
 	}
 	
 	public void writeFile(String path, String filename) throws IOException {

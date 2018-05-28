@@ -377,8 +377,6 @@ public class Graphs {
 		}
 	}
 
-
-
 	private static int minCapacity(Graph graph, List<Integer> augmentingPath) {
 		int minValue = Integer.MAX_VALUE;
 		for(int i=0; i<augmentingPath.size()-1; i++) {
@@ -390,14 +388,29 @@ public class Graphs {
 		}
 		return minValue;
 	}
-
+	
 	/**
-	 *
+	 * 
 	 * @param graph
+	 * @param starts
+	 * @param ends
 	 * @param source
 	 * @param target
 	 * @return
 	 */
+	public static Graph makeMultiFlowGraph(AdjGraph graph, int[] starts, int[] ends, int source, int target){
+		for(int start : starts){
+			graph.addEdge(source, start, Integer.MAX_VALUE);
+		}
+
+		for(int end : ends){
+			graph.addEdge(end, target, Integer.MAX_VALUE);
+		}
+
+		return graph;
+	}
+
+	/*
 	public static int EdmonsKarp(Graph graph, int source[], int[] target) {
 		int totalFlow = 0;
 		boolean noMorePath = false;
@@ -430,15 +443,10 @@ public class Graphs {
 			}
 		}
 		return totalFlow;
-	}
+	}*/
 
-	/**
-	 *
-	 * @param graph
-	 * @param source
-	 * @param target
-	 * @return
-	 */
+	
+	/*
 	public static List<Edge> EdmonsKarpEdges(Graph graph, int source[], int[] target) {
 		List<Edge> cutEdges = new ArrayList<>();
 		boolean noMorePath = false;
@@ -474,17 +482,5 @@ public class Graphs {
 			}
 		}
 		return cutEdges;
-	}
-
-	public static Graph makeMultiFlowGraph(AdjGraph graph, int[] starts, int[] ends, int source, int target){
-		for(int start : starts){
-			graph.addEdge(source, start, Integer.MAX_VALUE);
-		}
-
-		for(int end : ends){
-			graph.addEdge(end, target, Integer.MAX_VALUE);
-		}
-
-		return graph;
-	}
+	}*/
 }

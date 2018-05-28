@@ -1,13 +1,8 @@
 package fr.upem.algo.metamorph.mainTests;
 
-import fr.upem.algo.metamorph.graph.AdjGraph;
-import fr.upem.algo.metamorph.graph.Graph;
-import fr.upem.algo.metamorph.graph.Graphs;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -16,7 +11,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import fr.upem.algo.metamorph.graph.AdjGraph;
+import fr.upem.algo.metamorph.graph.Graph;
+import fr.upem.algo.metamorph.graph.Graphs;
 
 public class TestsGraph {
 	private final static Pattern patternFlow = Pattern.compile(
