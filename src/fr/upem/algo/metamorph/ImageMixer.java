@@ -89,7 +89,7 @@ public class ImageMixer {
 			int i2 = i;
 			graph.forEachEdge(i, e -> {
 				if(e.getValue() == graphCopy.getValue(e.getStart(), e.getEnd())) {
-					mixed.set(i2, new Color(Image.blur(left.get(i2).getRGB(), right.get(i2).getRGB(), 0.7)));
+					mixed.set(i2, new Color(Image.blur(left.get(i2).getRGB(), right.get(i2).getRGB(), 0.75)));
 				} else if(mask.get(i2).getGreen() < 100 && mask.get(i2).getRed() > mask.get(i2).getBlue() ) {
 					mixed.set(i2, right.get(i2));
 				} else {
